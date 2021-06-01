@@ -1,0 +1,27 @@
+version: "3"
+services:
+  mongodb:
+    image: mongo
+    networks:
+      - app-network
+    logging:
+      driver: none
+  node:
+    build:
+      dockerfile: ./api.dockerfile
+      context: .
+    image: alexandre/node-marketplace
+    container_name: node-marketplace
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    networks:
+      - app-network
+    depends_on:
+      - "mongodb"
+    command: yarn start
+networks:
+  app-network:
+    driver: bridge
